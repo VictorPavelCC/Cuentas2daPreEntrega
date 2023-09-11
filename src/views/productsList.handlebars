@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Productos</title>
+    <!-- Enlace a los estilos de Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <!-- Estilos adicionales para la página -->
+    <style>
+      /* Personaliza tus estilos aquí */
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Listado de Productos</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Stock</th>
+                    <th>Precio</th>
+                    <th>Imagen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each payload}}
+                <tr>
+                    <td>{{this.name}}</td>
+                    <td>{{this.category}}</td>
+                    <td>{{this.stock}}</td>
+                    <td>{{this.price}}</td>
+                    <td><img src="{{this.image}}" alt="{{this.name}}" width="100"></td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
+        <!-- Paginación -->
+        <nav aria-label="Página">
+            <ul class="pagination justify-content-center">
+                {{#if products.hasPrevPage}}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{products.prevPage}}">Anterior</a>
+                </li>
+                {{/if}}
+
+                {{#each products.totalPages}}
+                <li class="page-item {{#if this.current}}active{{/if}}">
+                    <a class="page-link" href="?page={{this}}">{{this}}</a>
+                </li>
+                {{/each}}
+
+                {{#if products.hasNextPage}}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{products.nextPage}}">Siguiente</a>
+                </li>
+                {{/if}}
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>
