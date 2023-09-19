@@ -76,7 +76,7 @@
             </tbody>
         </table>
 
-        <!-- Paginación -->
+
         <nav aria-label="Página">
             <ul class="pagination justify-content-center">
                 {{#if hasPrevPage}}
@@ -123,8 +123,6 @@
                 const Sort = currentSort === "asc" ? "desc" : "asc";
                 queryParams.set("sort", Sort);
                 Url.search = queryParams.toString();
-
-                // Redireccionar a la URL actualizada
                 window.location.href = Url.toString();
             });
 
@@ -142,7 +140,7 @@
             });
         });
 
-        //funcion para añadir al carrito
+
         function addToCart(item) {
 
             const productId = item.id;
@@ -170,7 +168,7 @@
                         }).showToast();
                         console.log('Producto agregado al carrito con éxito');
                     } else {
-                        // Maneja la respuesta si hay un error
+                        
                         console.error('Error al agregar el producto al carrito');
                     }
                 })
