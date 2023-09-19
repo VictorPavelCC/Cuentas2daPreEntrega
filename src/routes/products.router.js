@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
 
     const query = category ? { category } : {};
 
-    const options = {limit ,page ,sort,};
+    const options = {limit ,page ,sort};
 
     let products = await productModel.paginate(query, options);
 
@@ -26,7 +26,7 @@ router.get("/", async (req, res) => {
     const nextLink = hasNextPage ? `/api/products?limit=${limit}&page=${page + 1}&sort=${sort}&category=${category}` : null;
 
     console.log(products.docs)
-    res.render("productsList", {
+    res.send({
       status: "success",
       payload: products.docs,
       totalPages,
@@ -41,6 +41,77 @@ router.get("/", async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ status: "error", error: "Error al obtener los productos" })
+  }
+});
+
+router.get("/productsList", async (req, res) => {
+  let { limit, page, sort, category } = req.query;
+  try {
+    limit = parseInt(limit, 10) || 10;
+    page = parseInt(page, 10) || 1;
+    sort = sort === "asc" ? { price: 1 } : sort === "desc" ? { price: -1 } : {};
+
+    const query = category ? { category } : {};
+
+    const options = {limit ,page ,sort};
+
+    let products = await productModel.paginate(query, options);
+
+    const pageNumbers = [];
+    for (let i = 1; i <= products.totalPages; i++) {
+      pageNumbers.push({ number: i, current: i === products.page });
+    }
+    let categories;
+    try {
+      const result = await productModel.distinct("category");
+      categories = result;
+      categories.push("Todas");
+    } catch (error) {}
+
+    res.render("productsList", {
+      status: "success",
+      payload: products.docs,
+      totalPages: products.totalPages,
+      prevPage: products.prevPage,
+      nextPage: products.nextPage,
+      page: products.page,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
+      pageNumbers: pageNumbers,
+      categories: categories,
+    });
+  } catch (error) {
+    res.render("productsList", {
+      status: "error",
+    });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  let id = req.params.id;
+  try {
+    const product = await productModel.findById(id);
+
+    res.render("product", {
+      payload: product,
+    });
+  } catch (error) {
+    res.status({
+      status: error,
+    });
+  }
+});
+
+router.get("/categories", async (req, res) => {
+  try {
+    const categories = await productModel.distinct("category");
+    res.send({
+      categories: categories,
+    });
+  } catch (error) {
+    res.render("productsList", {
+      status: error,
+    });
   }
 });
 
@@ -60,7 +131,6 @@ router.post("/", async (req, res) => {
 
   res.send({ result: "success", payload: result })
 })
-
 
 router.put("/", async (req, res) => {
   let { name, category, price, stock, image } = req.body

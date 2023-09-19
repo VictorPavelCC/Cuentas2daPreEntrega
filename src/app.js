@@ -2,6 +2,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cartRouter = require("./routes/carts.router")
 const productRouter = require("./routes/products.router")
+const userRouter = require("./routes/user.router");
 const handlebars = require("express-handlebars")
 const path = require("path");
 
